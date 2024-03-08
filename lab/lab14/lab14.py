@@ -175,31 +175,31 @@ def align_skeleton(skeleton, code):
             cost: the cost of the corrections, in edits
         """
         if skeleton_idx == len(skeleton) and code_idx == len(code):
-            return _________, ______________
+            return '', 0
         if skeleton_idx < len(skeleton) and code_idx == len(code):
             edits = "".join(["-[" + c + "]" for c in skeleton[skeleton_idx:]])
-            return _________, ______________
+            return edits, len(skeleton) - skeleton_idx
         if skeleton_idx == len(skeleton) and code_idx < len(code):
             edits = "".join(["+[" + c + "]" for c in code[code_idx:]])
-            return _________, ______________
-        
+            return edits, len(code) - code_idx
+
         possibilities = []
         skel_char, code_char = skeleton[skeleton_idx], code[code_idx]
         # Match
         if skel_char == code_char:
-            _________________________________________
-            _________________________________________
-            possibilities.append((_______, ______))
+            result, cost = helper_align(skeleton_idx + 1, code_idx + 1)
+            result = str(code_char) + result
+            possibilities.append((result, cost))
         # Insert
-        _________________________________________
-        _________________________________________
-        possibilities.append((_______, ______))
+        result, cost = helper_align(skeleton_idx, code_idx + 1)
+        result = "+[" + str(code_char) + "]" + result
+        possibilities.append((result, cost + 1))
         # Delete
-        _________________________________________
-        _________________________________________
-        possibilities.append((_______, ______))
+        result, cost = helper_align(skeleton_idx + 1, code_idx)
+        result = "-[" + str(skel_char) + "]" + result
+        possibilities.append((result, cost + 1))
         return min(possibilities, key=lambda x: x[1])
-    result, cost = ________________________
+    result, cost = helper_align(0, 0)
     return result
 
 
